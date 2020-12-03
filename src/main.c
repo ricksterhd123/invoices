@@ -2,11 +2,6 @@
 #include <stdlib.h>
 #include "sqlite3.h"
 
-void sqlite3_text_destructor(char** text)
-{
-    free(text);
-}
-
 // open/create file
 // create tables if they don't exist
 // 
