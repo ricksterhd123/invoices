@@ -15,17 +15,17 @@ int main()
     {
         if (create_contact_table(db)) 
         {
-            int success = add_contact(db, "John", "Doe", "John.Doe@example.com", "123456789");
-            if (success)
-                printf("Added entry");
-                
-            if (get_contacts(db, &contacts))
+            // int success = add_contact(db, "John", "Doe", "John.Doe@example.com", "123456789");
+            // if (success)
+            //     printf("Added entry");
+            int no_contacts = get_contacts(db, &contacts);
+            if (no_contacts != -1)
             {
-                printf("%i", sizeof(contacts)/sizeof(contacts[0]));
-                // for (int i = 0; i < ; i++)
-                // {
-                //     printf("%i\t%s\t%s\t%s\t%s\n", contacts[i].id, contacts[i].first_name, contacts[i].last_name, contacts[i].email, contacts[i].phone_number);
-                // }
+                //printf("%i", sizeof(contacts)/sizeof(contacts[0]));
+                for (int i = 0; i < no_contacts; i++)
+                {
+                    printf("%i\t%s\t%s\t%s\t%s\n", contacts[i].id, contacts[i].first_name, contacts[i].last_name, contacts[i].email, contacts[i].phone_number);
+                }
             }
         } else {
             printf("Could not create table...");

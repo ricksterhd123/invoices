@@ -1,5 +1,7 @@
 #pragma once
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+#include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 #include <stdio.h>
 #include "sqlite3.h"
@@ -74,39 +76,57 @@ int del_contact(sqlite3* db, int id)
  * char* lname - Contact last name
  * char* email - Contact email address
  * char* phone - Contact phone number
- * Returns: 1 on success otherwise 0
+ * Returns: Number of contacts found, -1 error
  */
 int get_contacts(sqlite3* db, contact** contacts)
 {
-    *(contacts) = (contact*) calloc(1, sizeof(contact));
+    *contacts = (contact*) calloc(1, sizeof(contact*));
 
     sqlite3_stmt* stmt = NULL;
     char* select_stmt = "SELECT * FROM contacts;";
 
     if (sqlite3_prepare_v2(db, select_stmt, -1, &stmt, NULL) == SQLITE_OK)
     {
-        int result = sqlite3_step(stmt);
-        for (int count = 1; result == SQLITE_ROW; count++) 
+        int result, count;
+        result = sqlite3_step(stmt);
+
+        for (count = 0; result == SQLITE_ROW; count++) 
         {
             // extend array
-            if (count > ARRAY_SIZE(*contacts))
+            if (count+1 > ARRAY_SIZE(*contacts))
             {
-                *(contacts) = (contact*) realloc(*contacts, sizeof(contact)*count);
+                *contacts = (contact*) realloc(*contacts, sizeof(contact*)*(count+1));
                 assert(*contacts);
             }
 
-            contacts[count-1]->id = sqlite3_column_int(stmt, 0);
-            contacts[count-1]->first_name = sqlite3_column_text(stmt, 1);
-            contacts[count-1]->last_name = sqlite3_column_text(stmt, 2);
-            contacts[count-1]->email = sqlite3_column_text(stmt, 3);
-            contacts[count-1]->phone_number = sqlite3_column_text(stmt, 4);
+            char* fname = (char*) sqlite3_column_text(stmt, 1);
+            char* lname = (char*) sqlite3_column_text(stmt, 2);
+            char* email = (char*) sqlite3_column_text(stmt, 3);
+            char* phone = (char*) sqlite3_column_text(stmt, 4);
+
+            contacts[count]->id = sqlite3_column_int(stmt, 0);
+            contacts[count]->first_name = (char*) malloc(strlen(fname)+1);
+            contacts[count]->last_name = (char*) malloc(strlen(lname)+1);
+            contacts[count]->email = (char*) malloc(strlen(email)+1);
+            contacts[count]->phone_number = (char*) malloc(strlen(phone)+1);
+
+            // check for fail
+            assert(contacts[count]->first_name && contacts[count]->last_name && \
+                    contacts[count]->email && contacts[count]->phone_number);
+            
+            strcpy(contacts[count]->first_name, fname);
+            strcpy(contacts[count]->last_name, lname);
+            strcpy(contacts[count]->email, email);
+            strcpy(contacts[count]->phone_number, phone);
+
             result = sqlite3_step(stmt);
         }
+
         if (result == SQLITE_DONE)
-            return 1;
+            return count;
         
         fprintf(stderr, "SQLite3 error code: %i", result);
         free(*contacts);
     }
-    return 0;
+    return -1;
 }
