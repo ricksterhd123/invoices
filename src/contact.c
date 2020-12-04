@@ -78,7 +78,7 @@ int del_contact(sqlite3* db, int id)
  */
 int get_contacts(sqlite3* db, contact** contacts)
 {
-    *(contacts) = (contact*) malloc(sizeof(contact));
+    *(contacts) = (contact*) calloc(1, sizeof(contact));
 
     sqlite3_stmt* stmt = NULL;
     char* select_stmt = "SELECT * FROM contacts;";
