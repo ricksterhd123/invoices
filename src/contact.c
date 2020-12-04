@@ -5,14 +5,6 @@
 #include "sqlite3.h"
 #include "contact.h"
 
-typedef struct contact {
-    int id;
-    char* first_name;
-    char* last_name;
-    char* email;
-    char* phone_number;
-} contact;
-
 /**
  * Description: Creates the contact table
  * Params: sqlite3* db - Database connection
@@ -49,14 +41,14 @@ int create_contact_table(sqlite3* db)
 int add_contact(sqlite3* db, char* fname, char* lname, char* email, char* phone)
 {
     sqlite3_stmt* stmt = NULL;
-    char* data[] = {&fname, &lname, &email, &phone};
+    char* data[] = {fname, lname, email, phone};
     char* insert_stmt = "INSERT INTO contacts (contact_id, first_name, last_name, email, phone) VALUES (null, ?, ?, ?, ?);";
     
     if (sqlite3_prepare_v2(db, insert_stmt, -1, &stmt, NULL) == SQLITE_OK)
     {
         int result = SQLITE_OK;
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 4; i++)
         {
             result = sqlite3_bind_text(stmt, i+1, data[i], -1, SQLITE_STATIC);
             assert(result == SQLITE_OK);
