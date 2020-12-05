@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "sqlite3.h"
@@ -10,6 +11,7 @@ int main()
 {
     contact* contacts = NULL;
     sqlite3 *db = (sqlite3 *) malloc(sizeof(sqlite3 *));
+    assert(db);
 
     if (sqlite3_open("file.db", &db) == SQLITE_OK)
     {
@@ -27,6 +29,8 @@ int main()
                     printf("%i\t%s\t%s\t%s\t%s\n", contacts[i].id, contacts[i].first_name, contacts[i].last_name, contacts[i].email, contacts[i].phone_number);
                 }
             }
+            contacts = 0;
+            free(contacts);
         } else {
             printf("Could not create table...");
         }
