@@ -1,7 +1,10 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include "sqlite3.h"
+#include "input.h"
 #include "contact.h"
 
 // open/create file
@@ -17,9 +20,20 @@ int main()
     {
         if (create_contact_table(db)) 
         {
-            // int success = add_contact(db, "John", "Doe", "John.Doe@example.com", "123456789");
-            // if (success)
-            //     printf("Added entry");
+            char* first_name = "John";
+            char* last_name = "Doe";
+            char* email_address = "John.Doe@example.com";
+            char* phone_number = "07222555555";
+
+            // test validation
+            printf("%s = %i\n", email_address, is_email_address(email_address, strlen(email_address)));
+            printf("%s = %i\n", phone_number, is_phone_number(phone_number, strlen(phone_number)));
+
+
+            int success = add_contact(db, "John", "Doe", email_address, phone_number);
+            if (success)
+                printf("Added entry\n");
+            
             int no_contacts = get_contacts(db, &contacts);
             if (no_contacts != -1)
             {
