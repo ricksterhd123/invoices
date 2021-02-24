@@ -1,5 +1,4 @@
 #pragma once
-#include <stdlib.h>
 #include <slre.h>
 
 /**
@@ -28,7 +27,7 @@ int is_phone_number(const char* str, int str_len)
 }
 
 // ^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$ 
-int is_postcode(const char* str, size_t str_len)
+int is_postcode(const char* str, int str_len)
 {
     return 0;
 }

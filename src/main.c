@@ -5,20 +5,20 @@
 
 #include "sqlite3.h"
 #include "input.h"
-#include "contact.h"
+#include "models/customer.h"
 
 // open/create file
 // create tables if they don't exist
 // 
 int main()
 {
-    contact* contacts = NULL;
+    customer* customers = NULL;
     sqlite3 *db = (sqlite3 *) malloc(sizeof(sqlite3 *));
     assert(db);
 
     if (sqlite3_open("file.db", &db) == SQLITE_OK)
     {
-        if (create_contact_table(db)) 
+        if (create_customer_table(db)) 
         {
             char* first_name = "John";
             char* last_name = "Doe";
@@ -30,21 +30,21 @@ int main()
             printf("%s = %i\n", phone_number, is_phone_number(phone_number, strlen(phone_number)));
 
 
-            int success = add_contact(db, "John", "Doe", email_address, phone_number);
+            int success = add_customer(db, "John", "Doe", email_address, phone_number);
             if (success)
                 printf("Added entry\n");
             
-            int no_contacts = get_contacts(db, &contacts);
-            if (no_contacts != -1)
+            int no_customers = get_customers(db, &customers);
+            if (no_customers != -1)
             {
-                //printf("%i", sizeof(contacts)/sizeof(contacts[0]));
-                for (int i = 0; i < no_contacts; i++)
+                //printf("%i", sizeof(customers)/sizeof(customers[0]));
+                for (int i = 0; i < no_customers; i++)
                 {
-                    printf("%i\t%s\t%s\t%s\t%s\n", contacts[i].id, contacts[i].first_name, contacts[i].last_name, contacts[i].email, contacts[i].phone_number);
+                    printf("%i\t%s\t%s\t%s\t%s\n", customers[i].id, customers[i].first_name, customers[i].last_name, customers[i].email, customers[i].phone_number);
                 }
             }
-            contacts = 0;
-            free(contacts);
+            customers = 0;
+            free(customers);
         } else {
             printf("Could not create table...");
         }

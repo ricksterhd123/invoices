@@ -4,7 +4,7 @@ project(Invoices VERSION 0.1 LANGUAGES C)
 add_subdirectory(src/libs/SQLite3)
 add_subdirectory(src/libs/slre)
 
-add_executable(Invoices src/main.c src/contact.c src/input.c)
+add_executable(Invoices src/main.c src/models/customer.c src/input.c)
 
 
 target_link_libraries(Invoices PUBLIC SQLite3 slre)
